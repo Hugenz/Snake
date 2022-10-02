@@ -7,8 +7,8 @@ couleur_fond = 0, 0, 0
 
 # couleur du serpent et de la pomme
 couleur_snake = 0, 255, 0
-couleur_queue = 0, 100, 0
 couleur_pomme = 255, 0, 0
+couleur_ananas = 255, 255, 0
 
 # vitesse du serpent
 blocsec = 10
@@ -23,6 +23,18 @@ score = 0
 # position de la pomme
 pomme_position_x = random.randrange(0, largeur,30)
 pomme_position_y = random.randrange(0, hauteur,30)
+
+# position de l'ananas
+ananas_position_x = random.randrange(0, largeur,30)
+ananas_position_y = random.randrange(0, hauteur,30)
+
+# couleur obstacle
+couleur_obstacle = 255, 255, 255
+
+# position obstacle
+obstacle_position_x = random.randrange(0, largeur,30)
+obstacle_position_y = random.randrange(0, hauteur,30)
+
 
 # position du serpent
 snake_position_y = 300
@@ -48,6 +60,17 @@ fenetre = pygame.display.set_mode((dimensions))
 pygame.display.set_caption("Snake by Hugenz")
 pygame.display.flip()
 
+# fonction pour afficher le score dans la fenetre a la fin du jeu
+def fin_jeu():
+    font = pygame.font.SysFont("comicsansms", 50)
+    text = font.render("Game Over", True, (255, 255, 255))
+    fenetre.blit(text, (largeur / 2 - 100, hauteur / 2 - 50))
+    font = pygame.font.SysFont("comicsansms", 30)
+    text = font.render("Score: " + str(score), True, (255, 255, 255))
+    fenetre.blit(text, (largeur / 2 - 50, hauteur / 2))
+    pygame.display.flip()
+    time.sleep(4)
+
 
 #####################################################################################################
                                   # BOUCLE PRINCIPALE #
@@ -64,6 +87,7 @@ while continuer:
         for j in range(30): # ligne horizontale
             pygame.draw.rect(fenetre, (109, 148, 3), (i * 30, j * 30, 30, 30), 1) # couleur de la grille
 
+
     # si l'utilisateur ferme la fenetre le jeu s'arrete
 
     for event in pygame.event.get(): # parcourir la liste des evenements
@@ -71,7 +95,7 @@ while continuer:
             continuer = False # arreter la boucle
 
 
-    # creation des evenements pour pour bouger le serpent avec les touches directionnelles
+    # creation des evenements pour bouger le serpent avec les touches directionnelles
 
     if event.type == pygame.KEYDOWN: # si une touche est enfoncée
         if event.key == pygame.K_UP:
@@ -95,14 +119,17 @@ while continuer:
     # lorsque le serpent depasse les limites de la fenetre, le jeu s'arrete
 
     if snake_position_x < 0: # si le serpent depasse la limite gauche
+        fin_jeu()
         continuer = False # arreter la boucle
     if snake_position_x > largeur: # si le serpent depasse la limite droite
+        fin_jeu()
         continuer = False # arreter la boucle
     if snake_position_y < 0: # si le serpent depasse la limite haute
+        fin_jeu()
         continuer = False # arreter la boucle
     if snake_position_y > hauteur: # si le serpent depasse la limite basse
+        fin_jeu()
         continuer = False # arreter la boucle
-
 
 
 
@@ -125,6 +152,14 @@ while continuer:
         print(score)
 
 
+    if snake_position_x == ananas_position_x and snake_position_y == ananas_position_y:
+        ananas_position_x = random.randrange(0, largeur, 30)
+        ananas_position_y = random.randrange(0, hauteur, 30)
+        taille_snake += 5
+        score += 2
+        print(score)
+
+
     # on cree une liste de coordonnees pour le serpent
 
     snake_head = [] # creer une liste vide
@@ -144,6 +179,18 @@ while continuer:
 
     # on dessine une boule pour la pomme
     pygame.draw.circle(fenetre, couleur_pomme, (pomme_position_x + 15, pomme_position_y + 15), 15) # dessiner un cercle de couleur pomme aux coordonnees pomme_position_x + 15 et pomme_position_y + 15 avec un rayon de 15
+    # on dessine un carre pour l ananas
+    pygame.draw.rect(fenetre, couleur_ananas, (ananas_position_x, ananas_position_y, 30, 30))
+
+
+    # apparition de 1 obstacle tous les 10 points
+    for i in range(0, 20):
+        for j in range(0, 20):
+            if score % 10 == 0:
+                pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+
+
+
 
     # affichage du score
     font = pygame.font.SysFont("comicsansms", 30) # police d'ecriture et taille
@@ -151,18 +198,13 @@ while continuer:
     fenetre.blit(text, (0, 0)) # afficher le texte
 
 
+
     # si le serpent se mord la queue, le jeu s'arrete
 
-    for x in position_snake[:-1]: # pour chaque valeur de la liste position_snake sauf la derniere car c'est la tete du serpent
-        if x == snake_head: # si la valeur de la liste est egale a la tete du serpent, c'est que le serpent se mord la queue donc le jeu s'arrete
-            text = font.render("GAME OVER", True, (255, 255, 255)) # texte a afficher
-            fenetre.blit(text, (largeur / 2 - 100, hauteur / 2 - 100)) # afficher le texte
-            text = font.render("Score: " + str(score), True, (255, 255, 255)) # texte a afficher
-            fenetre.blit(text, (largeur / 2 - 100, hauteur / 2 - 50)) # afficher le texte
-            # on attend 2 secondes avant de fermer la fenetre
-            time.sleep(2)
+    for x in position_snake[:-1]: # pour chaque valeur de la liste position_snake sauf la derniere
+        if x == snake_head: # si la valeur de la liste est egale a la liste snake_head
+            fin_jeu()
             continuer = False # arreter la boucle
-
 
 
     # on met a jour l'ecran
