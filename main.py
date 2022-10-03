@@ -184,10 +184,23 @@ while continuer:
 
 
     # apparition de 1 obstacle tous les 10 points
-    for i in range(0, 20):
-        for j in range(0, 20):
-            if score % 10 == 0:
-                pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 5 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 10 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 15 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 20 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 25 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 30 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 35 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+    if score == 40 :
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+
 
 
 
