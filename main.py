@@ -72,6 +72,8 @@ def fin_jeu():
     time.sleep(4)
 
 
+t1 = time.time()
+
 #####################################################################################################
                                   # BOUCLE PRINCIPALE #
 #####################################################################################################
@@ -79,6 +81,7 @@ def fin_jeu():
 continuer = True
 while continuer:
 
+    t2 = time.time()
 
     # affichage de la grille
 
@@ -97,24 +100,27 @@ while continuer:
 
     # creation des evenements pour bouger le serpent avec les touches directionnelles
 
-    if event.type == pygame.KEYDOWN: # si une touche est enfoncée
+    if event.type == pygame.KEYDOWN:  # si une touche est enfoncée
         if event.key == pygame.K_UP:
-            # lorsque l'on presse la touche UP, le serpent se deplace vers le haut
-            snake_direction_y = -1 # direction vers le haut
-            snake_direction_x = 0 # direction vers le haut
+            if snake_direction_y == 0:
+                # lorsque l'on presse la touche UP, le serpent se deplace vers le haut
+                snake_direction_y = -1  # direction vers le haut
+                snake_direction_x = 0  # direction vers le haut
         if event.key == pygame.K_DOWN:
-            # lorsque l'on presse la touche DOWN, le serpent se deplace vers le bas
-            snake_direction_y = 1 # direction vers le bas
-            snake_direction_x = 0 # direction vers le bas
+            if snake_direction_y == 0:
+                # lorsque l'on presse la touche DOWN, le serpent se deplace vers le bas
+                snake_direction_y = 1  # direction vers le bas
+                snake_direction_x = 0  # direction vers le bas
         if event.key == pygame.K_LEFT:
-            # lorsque l'on presse la touche LEFT, le serpent se deplace vers la gauche
-            snake_direction_x = -1 # direction vers la gauche
-            snake_direction_y = 0 # direction vers la gauche
+            if snake_direction_x == 0:
+                # lorsque l'on presse la touche LEFT, le serpent se deplace vers la gauche
+                snake_direction_x = -1  # direction vers la gauche
+                snake_direction_y = 0  # direction vers la gauche
         if event.key == pygame.K_RIGHT:
-            # lorsque l'on presse la touche RIGHT, le serpent se deplace vers la droite
-            snake_direction_x = 1 # direction vers la droite
-            snake_direction_y = 0 # direction vers la droite
-
+            if snake_direction_x == 0:
+                # lorsque l'on presse la touche RIGHT, le serpent se deplace vers la droite
+                snake_direction_x = 1  # direction vers la droite
+                snake_direction_y = 0  # direction vers la droite
 
     # lorsque le serpent depasse les limites de la fenetre, le jeu s'arrete
 
@@ -183,28 +189,6 @@ while continuer:
     pygame.draw.rect(fenetre, couleur_ananas, (ananas_position_x, ananas_position_y, 30, 30))
 
 
-    # apparition de 1 obstacle tous les 10 points
-    if score == 5 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-    if score == 10 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-    if score == 15 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-    if score == 20 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-    if score == 25 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-    if score == 30 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-    if score == 35 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-    if score == 40 :
-        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
-
-
-
-
-
     # affichage du score
     font = pygame.font.SysFont("comicsansms", 30) # police d'ecriture et taille
     text = font.render("Score: " + str(score), True, (255, 255, 255)) # texte a afficher
@@ -219,6 +203,22 @@ while continuer:
             fin_jeu()
             continuer = False # arreter la boucle
 
+
+    # on cree un obstacle au bout de 3seconde et on le supprime pour en generer un autre
+    if t2 - t1 >= 2:
+        pygame.draw.rect(fenetre, couleur_obstacle, (obstacle_position_x, obstacle_position_y, 30, 30))
+        if t2 - t1 >= 6:
+            t1 = time.time()
+            t2 = time.time()
+            obstacle_position_x = random.randrange(0, largeur, 30)
+            obstacle_position_y = random.randrange(0, hauteur, 30)
+
+
+
+
+    if snake_position_x == obstacle_position_x and snake_position_y == obstacle_position_y:
+        fin_jeu()
+        continuer = False
 
     # on met a jour l'ecran
     pygame.display.flip()
